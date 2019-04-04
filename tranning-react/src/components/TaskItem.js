@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
 import { MDBBtn } from 'mdbreact';
+import { connect } from 'react-redux';
+
+import * as actions from './../actions/index';
 
 class TaskItem extends Component {
   onUpdateStatus = () => {
     this.props.onUpdateStatus(this.props.task.id);
   }
 
-  onDelete = () => {
-    this.props.onDelete(this.props.task.id);
+  onDeleteItem = () => {
+    this.props.onDeleteTask(this.props.task.id);
+    this.props.onCloseForm();
   }
   
-  onUpdate = () => {
-    this.props.onUpdate(this.props.task.id);
+  onEditTask = () => {
+    this.props.onOpenForm();
+    this.props.onEditTask(this.props.task);
   }
 
   render() {
@@ -37,7 +42,7 @@ class TaskItem extends Component {
           <MDBBtn 
             type="butotn"
             color="success mr-3"
-            onClick={this.onUpdate}
+            onClick={this.onEditTask}
           >
             <i className="mdi mdi-pencil mr-1" />
             Update
@@ -45,7 +50,7 @@ class TaskItem extends Component {
           <MDBBtn 
             type="button" 
             color="danger"
-            onClick={this.onDelete}
+            onClick={this.onDeleteItem}
           >
             <i className="mdi mdi-delete mr-1" />
             Remove
@@ -56,4 +61,31 @@ class TaskItem extends Component {
   }
 }
 
-export default TaskItem;
+
+const mapStateToProps = state => {
+  return {
+
+  };
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onUpdateStatus: (id) => {
+      dispatch(actions.updateStatus(id));
+    },
+    onDeleteTask: (id) => {
+      dispatch(actions.deleteTask(id));
+    },
+    onCloseForm: () => {
+      dispatch(actions.closeForm());
+    },
+    onOpenForm: () => {
+      dispatch(actions.openForm());
+    },
+    onEditTask: (task) => {
+      dispatch(actions.editTask(task));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);

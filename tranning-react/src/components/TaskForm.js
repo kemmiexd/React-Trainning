@@ -15,28 +15,26 @@ class TaskForm extends Component {
   }
 
   componentWillMount() {
-    if (this.props.task) {
+    if (this.props.itemEditing && this.props.itemEditing.id !== null) {
       this.setState({
-        id: this.props.task.id,
-        name: this.props.task.name,
-        status: this.props.task.status,
+        id: this.props.itemEditing.id,
+        name: this.props.itemEditing.name,
+        status: this.props.itemEditing.status,
       });
+    } else {
+      this.onClear();
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps && nextProps.task) {
+    if (nextProps && nextProps.itemEditing) {
       this.setState({
-        id: nextProps.task.id,
-        name: nextProps.task.name,
-        status: nextProps.task.status,
+        id: nextProps.itemEditing.id,
+        name: nextProps.itemEditing.name,
+        status: nextProps.itemEditing.status,
       });
-    } else if (!nextProps.task) {
-      this.setState({
-        id: '',
-        name: '',
-        status: false
-      })
+    } else {
+      this.onClear();
     }
   }
 
@@ -55,9 +53,9 @@ class TaskForm extends Component {
     })
   }
 
-  onSubmit = (event) => {
+  onSave = (event) => {
     event.preventDefault();
-    this.props.onAddTask(this.state);
+    this.props.onSaveTask(this.state);
     this.onClear();
     this.onCloseForm();
   }
@@ -70,15 +68,16 @@ class TaskForm extends Component {
   }
 
   render() {
-    var { id } = this.state
+    var { id } = this.state;
 
+    if (!this.props.isDisplayForm) return '';
     return (
       <div style={{
         border: "1px solid #e1e1e1",
         borderRadius: 5,
       }}>
         <h6 style={{padding: " 10px 15px", background: "#f4f4f4"}}>
-          { id !== '' ? 'Edit Item' : 'Add Item' }
+          { id ? 'Edit Item' : 'Add Item' }
           <span 
             style={{float: "right", cursor: "pointer", marginTop: "-5px"}} 
             className="mdi mdi-close mdi-24px"
@@ -86,7 +85,7 @@ class TaskForm extends Component {
           >
           </span>
         </h6>
-        <form className="p-3" onSubmit={this.onSubmit}>
+        <form className="p-3" onSubmit={this.onSave}>
           <div className="grey-text">
             <input 
               className="form-control mb-3" 
@@ -130,14 +129,15 @@ class TaskForm extends Component {
 
 const mapStateToProps = (state) => {
   return {
-
+    isDisplayForm: state.isDisplayForm,
+    itemEditing: state.itemEditing
   }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    onAddTask: (task) => {
-      dispatch(actions.addTask(task));
+    onSaveTask: (task) => {
+      dispatch(actions.saveTask(task));
     },
     onCloseForm: () => {
       dispatch(actions.closeForm());

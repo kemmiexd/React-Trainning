@@ -49,18 +49,6 @@ class App extends Component {
     })
   }
 
-  onUpdateStatus = (id) => {
-    var { tasks } = this.state;
-    var index = this.findIndex(id);
-    if (index !== -1) {
-      tasks[index].status = !tasks[index].status;
-      this.setState({
-        tasks: tasks
-      });
-      localStorage.setItem('tasks', JSON.stringify(tasks))
-    }
-  }
-
   findIndex = (id) => {
     var { tasks } = this.state;
     var result = -1;
@@ -70,20 +58,6 @@ class App extends Component {
       }
     });
     return result;
-  }
-
-  onDelete = (id) => {
-    var { tasks } = this.state;
-    var index = this.findIndex(id);
-    if (index !== -1) {
-      tasks.splice(index, 1);
-      this.setState({
-        tasks: tasks
-      });
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-
-    this.onCloseForm();
   }
 
   onUpdate = (id) => {
@@ -123,7 +97,7 @@ class App extends Component {
   }
 
   render() {
-    var { taskEditing, filter, keyword, sortBy, sortValue } = this.state;
+    var { filter, keyword, sortBy, sortValue } = this.state;
 
     var { isDisplayForm } = this.props;
     // if (filter) {
@@ -162,13 +136,6 @@ class App extends Component {
     //   });
     // }
 
-    var elementTaskForm = isDisplayForm === true
-      ? <TaskForm 
-        task={taskEditing}
-      /> 
-      : ''
-    ;
-
     return (
       <div className="App">
         <MDBContainer>
@@ -176,7 +143,7 @@ class App extends Component {
 
           <MDBRow>
             <MDBCol sm={ isDisplayForm === true ? "4" : "" }>
-              { elementTaskForm }
+              <TaskForm />
             </MDBCol>
 
             <MDBCol sm={ isDisplayForm === true ? "8" : "12" }>
@@ -199,8 +166,6 @@ class App extends Component {
               </MDBRow>
 
               <TaskBoard 
-                onUpdateStatus={this.onUpdateStatus}
-                onDelete={this.onDelete}
                 onUpdate={this.onUpdate}
                 onFilter={this.onFilter}
               /> 

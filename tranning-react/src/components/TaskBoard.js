@@ -3,6 +3,7 @@ import { MDBTable, MDBTableBody, MDBTableHead, MDBInput } from 'mdbreact';
 import { connect } from 'react-redux';
 
 import TaskItem from './TaskItem';
+import * as actions from './../actions/index';
 
 class TaskBoard extends Component {
   constructor(props) {
@@ -19,11 +20,13 @@ class TaskBoard extends Component {
     var name = target.name;
     var value = target.value;
 
-    this.props.onFilter(
-      name === 'filterName' ? value : this.state.filterName,
-      name === 'filterStatus' ? value : this.state.filterStatus
-    )
+    var filter = {
+      name: name === 'filterName' ? value : this.state.filterName,
+      status: name === 'filterStatus' ? value : this.state.filterStatus
+    }
 
+    this.props.onfilterTable(filter)
+    
     this.setState({
       [name]: value
     });
@@ -32,14 +35,50 @@ class TaskBoard extends Component {
   }
 
   render() {
-    var { tasks } = this.props;
+    var { tasks, filterTable, keyword, sort } = this.props;
     var { filterName, filterStatus } = this.state;
+    
+     if (filterTable) {
+      if (filterTable.name) {
+        tasks = tasks.filter((task) => {
+          return task.name.toLowerCase().indexOf(filterTable.name) !== -1
+        });
+      }
+
+      tasks = tasks.filter((task) => {
+        if (filterTable.status === -1) {
+          return task;
+        } else {
+          return task.status === (filterTable.status === 1 ? true : false)
+        }
+      });
+    }
+ 
+    if (keyword) {
+      tasks = tasks.filter((task) => {
+        return task.name.toLowerCase().indexOf(keyword) !== -1
+      });
+    }
+    
+    if (sort.by === 'name') {
+      tasks.sort((item1, item2) => {
+        if (item1.name > item2.name) return sort.value
+        else if (item1.name < item2.name) return -sort.value
+        else return 0
+      });
+    } else {
+      tasks.sort((item1, item2) => {
+        if (item1.status > item2.status) return -sort.value
+        else if (item1.status < item2.status) return sort.value
+        else return 0
+      });
+    }
+    
     var elementTasks = tasks.map((task, index) => {
       return <TaskItem 
               key={task.id} 
               index={index} 
-              task={task} 
-              onUpdate={this.props.onUpdate}
+              task={task}
             />
     });
 
@@ -89,8 +128,20 @@ class TaskBoard extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    tasks: state.tasks
+    tasks: state.tasks,
+    filterTable: state.filterTable,
+    keyword: state.search,
+    sort: state.sort
   }
 };
 
-export default connect(mapStateToProps, null)(TaskBoard);
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onfilterTable: (filter) => {
+      dispatch(actions.filterTask(filter));
+    }
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskBoard);

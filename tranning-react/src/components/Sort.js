@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem } from "mdbreact";
+import { connect } from 'react-redux';
 
+import * as actions from './../actions/index';
 
 class Sort extends Component {
-  componentWillReceiveProps(nextProps) {
-    
-  }
-
   onClick = (sortBy, sortValue) => {
-    this.props.onSort(sortBy, sortValue);
+    this.props.onSort({
+      by: sortBy,
+      value: sortValue
+    });
   }
 
   render() {
@@ -22,14 +23,14 @@ class Sort extends Component {
         <MDBDropdownMenu basic>
           <MDBDropdownItem onClick={() => this.onClick('name', 1)}>
             Name, A - Z
-            { (this.props.sortBy === 'name' && this.props.sortValue === 1)
+            { (this.props.sort.by === 'name' && this.props.sort.value === 1)
               ? <i className="mdi mdi-check ml-3 mdi-18px" /> 
               : ''
             }
           </MDBDropdownItem>
           <MDBDropdownItem onClick={() => this.onClick('name', -1)}>
             Name, Z - A
-            { (this.props.sortBy === 'name' && this.props.sortValue === -1)
+            { (this.props.sort.by === 'name' && this.props.sort.value === -1)
               ? <i className="mdi mdi-check ml-3 mdi-18px" /> 
               : ''
             }
@@ -37,14 +38,14 @@ class Sort extends Component {
           <MDBDropdownItem divider />
           <MDBDropdownItem onClick={() => this.onClick('status', 1)}>
             Status, Active
-            { (this.props.sortBy === 'status' && this.props.sortValue === 1)
+            { (this.props.sort.by === 'status' && this.props.sort.value === 1)
               ? <i className="mdi mdi-check ml-3 mdi-18px" /> 
               : ''
             }
           </MDBDropdownItem>
           <MDBDropdownItem onClick={() => this.onClick('status', -1)}>
             Status, Private
-            { (this.props.sortBy === 'status' && this.props.sortValue === -1)
+            { (this.props.sort.by === 'status' && this.props.sort.value === -1)
               ? <i className="mdi mdi-check ml-3 mdi-18px" /> 
               : ''
             }
@@ -55,4 +56,18 @@ class Sort extends Component {
   }
 }
 
-export default Sort;
+const mapStateToProps = state => {
+  return {
+    sort: state.sort
+  };
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onSort: (sort) => {
+      dispatch(actions.sortTask(sort));
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sort);

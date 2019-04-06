@@ -13,34 +13,18 @@ import * as actions from './actions/index';
 import './App.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      taskEditing: null,
-      fitler: { 
-        name: '', 
-        status: -1 
-      },
-      keyword: '',
-      sortBy: 'name',
-      sortValue: 1
-    }
-  }
-
   onToggleForm = () => {
-    // if (this.state.isDisplayForm && this.state.taskEditing !== null) {
-    //   this.setState({
-    //     isDisplayForm: true,
-    //     taskEditing: null
-    //   });
-    // } else {
-    //   this.setState({
-    //     isDisplayForm: !this.state.isDisplayForm,
-    //     taskEditing: null
-    //   });
-    // }
-    this.props.onToggleForm();
+    var { itemEditing } = this.props;
+    if (itemEditing && itemEditing.id !== '') {
+      this.props.onOpenForm();
+    } else {
+      this.props.onToggleForm();
+    }
+    this.props.onClearTask({
+      id: '',
+      name: '',
+      status: false
+    });
   }
 
   onShowForm = () => {
@@ -49,92 +33,8 @@ class App extends Component {
     })
   }
 
-  findIndex = (id) => {
-    var { tasks } = this.state;
-    var result = -1;
-    tasks.forEach((task, index) => {
-      if (task.id === id) {
-        result = index;
-      }
-    });
-    return result;
-  }
-
-  onUpdate = (id) => {
-    var { tasks } = this.state;
-    var index = this.findIndex(id);
-    var taskEditing = tasks[index];
-
-    this.setState({
-      taskEditing: taskEditing
-    })
-
-    this.onShowForm()
-  }
-
-  onFilter = (filterName, filterStatus) => {
-    filterStatus = parseInt(filterStatus, 10);
-    
-    this.setState({
-      filter: {
-        name: filterName.toLowerCase(), 
-        status: filterStatus
-      }
-    });
-  }
-
-  onSearch = (keyword) => {
-    this.setState({
-       keyword: keyword
-    })
-  }
-
-  onSort = (sortBy, sortValue) => {
-    this.setState({
-      sortBy: sortBy,
-      sortValue: sortValue
-    });
-  }
-
   render() {
-    var { filter, keyword, sortBy, sortValue } = this.state;
-
     var { isDisplayForm } = this.props;
-    // if (filter) {
-    //   if (filter.name) {
-    //     tasks = tasks.filter((task) => {
-    //       return task.name.toLowerCase().indexOf(filter.name) !== -1
-    //     });
-    //   }
-
-    //   tasks = tasks.filter((task) => {
-    //     if (filter.status === -1) {
-    //       return task;
-    //     } else {
-    //       return task.status === (filter.status === 1 ? true : false)
-    //     }
-    //   });
-    // }
-
-    // if (keyword) {
-    //   tasks = tasks.filter((task) => {
-    //     return task.name.toLowerCase().indexOf(keyword) !== -1
-    //   });
-    // }
-
-    // if (sortBy === 'name') {
-    //   tasks.sort((item1, item2) => {
-    //     if (item1.name > item2.name) return sortValue
-    //     else if (item1.name < item2.name) return -sortValue
-    //     else return 0
-    //   });
-    // } else {
-    //   tasks.sort((item1, item2) => {
-    //     if (item1.status > item2.status) return -sortValue
-    //     else if (item1.status < item2.status) return sortValue
-    //     else return 0
-    //   });
-    // }
 
     return (
       <div className="App">
@@ -158,17 +58,14 @@ class App extends Component {
 
               <MDBRow className="mb-3">
                 <MDBCol>
-                  <Search onSearch={this.onSearch} />
+                  <Search />
                 </MDBCol>
                 <MDBCol>
-                  <Sort onSort={this.onSort} sortBy={sortBy} sortValue={sortValue} />
+                  <Sort />
                 </MDBCol>
               </MDBRow>
 
-              <TaskBoard 
-                onUpdate={this.onUpdate}
-                onFilter={this.onFilter}
-              /> 
+              <TaskBoard /> 
 
             </MDBCol>
           </MDBRow>
@@ -180,7 +77,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isDisplayForm: state.isDisplayForm
+    isDisplayForm: state.isDisplayForm,
+    itemEditing: state.itemEditing
   };
 }
 
@@ -188,6 +86,12 @@ const mapDispatchToProps = (dispatch, props) => {
   return {
     onToggleForm: () => {
       dispatch(actions.toggleForm());
+    },
+    onClearTask: (task) => {
+      dispatch(actions.editTask(task));
+    },
+    onOpenForm: () => {
+      dispatch(actions.openForm());
     }
   };
 }

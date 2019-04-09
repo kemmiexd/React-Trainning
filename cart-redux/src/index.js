@@ -9,7 +9,8 @@ import { Provider } from 'react-redux';
 import appReducers from './reducers/index';
 
 const store = createStore(
-  appReducers
+  appReducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
 ReactDOM.render(

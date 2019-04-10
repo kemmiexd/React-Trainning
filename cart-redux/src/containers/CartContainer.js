@@ -7,6 +7,7 @@ import CartItem from './../components/CartItem';
 import CartResult from './../components/CartResult';
 
 import * as Message from './../constants/Message';
+import { actDeleteProductInCart, actChangeMessage, actUpdateProductInCart } from './../actions/index';
 
 class CartContainer extends Component {
   render() {
@@ -20,7 +21,8 @@ class CartContainer extends Component {
   }
 
   showCartItem = (cart) => {
-    var result = Message.MSG_CART_EMPTY;
+    var { onDeteleProductInCart, onChangeMessage, onUpdateProductInCart } = this.props;
+    var result = <tr><td>{Message.MSG_CART_EMPTY}</td></tr>;
     if (cart.length > 0) {
       result = cart.map((item, index) => {
         return (
@@ -28,6 +30,9 @@ class CartContainer extends Component {
             key={index}
             item={item}
             index={index}
+            onDeteleProductInCart={onDeteleProductInCart}
+            onChangeMessage={onChangeMessage}
+            onUpdateProductInCart={onUpdateProductInCart}
           />
         );
       })
@@ -55,7 +60,10 @@ CartContainer.propTypes = {
       inventory: PropTypes.number.isRequired,
       rating: PropTypes.number.isRequired
     }).isRequired,
-    quantity: PropTypes.number.isRequired
+    quantity: PropTypes.number.isRequired,
+    onDeteleProductInCart: PropTypes.func.isRequired,
+    onChangeMessage: PropTypes.func.isRequired,
+    onUpdateProductInCart: PropTypes.func.isRequired
   })
     
   ).isRequired
@@ -67,4 +75,18 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, null)(CartContainer);
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onDeteleProductInCart: (product) => {
+      dispatch(actDeleteProductInCart(product));
+    },
+    onChangeMessage: (message) => {
+      dispatch(actChangeMessage(message));
+    },
+    onUpdateProductInCart: (product, quantity) => {
+      dispatch(actUpdateProductInCart(product, quantity));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CartContainer);

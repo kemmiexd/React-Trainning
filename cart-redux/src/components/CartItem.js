@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 
+import * as Message from './../constants/Message';
+
 class CartItem extends Component {
   render() {
     var { item } = this.props;
+    var { quantity } = item;
 
     return (
       <tr>
@@ -20,19 +23,19 @@ class CartItem extends Component {
         </td>
         <td>${item.product.price}</td>
         <td className="center-on-small-only">
-          <span className="qty">{item.quantity}</span>
+          <span className="qty"> {quantity} </span>
           <div className="btn-group radio-group" data-toggle="buttons">
             <label
-              className="btn btn-sm btn-primary
-                                  btn-rounded waves-effect waves-light"
+              className="btn btn-sm btn-primary btn-rounded waves-effect waves-light"
+              onClick={ () => this.onUpdateQuantity(item.product, item.quantity - 1) }
             >
-              <a href="index.html">—</a>
+              <span>—</span>
             </label>
             <label
-              className="btn btn-sm btn-primary
-                                  btn-rounded waves-effect waves-light"
+              className="btn btn-sm btn-primary btn-rounded waves-effect waves-light"
+              onClick={ () => this.onUpdateQuantity(item.product, item.quantity + 1) }
             >
-              <a href="index.html">+</a>
+              <span>+</span>
             </label>
           </div>
         </td>
@@ -45,12 +48,27 @@ class CartItem extends Component {
             data-placement="top"
             title=""
             data-original-title="Remove item"
+            onClick={ () => this.onDelete(item.product) }
           >
             X
           </button>
         </td>
       </tr>
     );
+  }
+
+  onUpdateQuantity = (product, quantity) => {
+    if (quantity > 0) {
+      var { onUpdateProductInCart, onChangeMessage } = this.props;
+      onUpdateProductInCart(product, quantity);
+      onChangeMessage(Message.MSG_UPDATE_CART_SUCCESS);
+    }
+  }
+
+  onDelete = (product) => {
+    var { onDeteleProductInCart, onChangeMessage } = this.props;
+    onDeteleProductInCart(product);
+    onChangeMessage(Message.MSG_DELETE_PRODUCT_IN_CART_SUCCESS);
   }
 
   showSubTotal = (price, quantity) => {

@@ -39,6 +39,8 @@ class Products extends Component {
       )
     });
 
+    var { location } = this.props;
+
     return (
       <div className="container">
         <h1>Danh sách sản phẩm</h1>

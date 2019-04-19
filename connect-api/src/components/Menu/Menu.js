@@ -35,7 +35,7 @@ class Menu extends Component {
   render() {
     return (
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-        <Link className="navbar-brand">Call API</Link>
+        <a className="navbar-brand" href="#.m">Call API</a>
         <div className="collapse navbar-collapse" id="navbarText">
           <ul className="navbar-nav mr-auto">
             { this.showMenus(menus) }

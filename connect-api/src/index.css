@@ -1,7 +1,7 @@
 @font-face {
   font-family: "SF Display";
-  font-weight: 200;
-  src: url("https://sf.abarba.me/SF-UI-Display-Light.otf");
+  font-weight: 400;
+  src: url("https://sf.abarba.me/SF-UI-Display-Regular.otf");
 }
 
 
@@ -9,6 +9,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "SF Display"!important;
+  font-weight: 400;
   background-image: linear-gradient(to right, #d7d2cc 0%, #304352 100%);
 }
 

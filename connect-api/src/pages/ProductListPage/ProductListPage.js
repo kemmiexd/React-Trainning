@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import ProductList from './../../components/ProductList/ProductList';
 import ProductItem from './../../components/ProductItem/ProductItem';
 
+import { actFetchProductsRequest, actDeleteProductRequest } from '../../actions/index';
+
 class ProductListPage extends Component {
+  componentDidMount() {
+    this.props.fetchAllProducts();
+  }
+
+  onDelete = (id) => {
+    this.props.onDeleteProduct(id);
+  }
+
   render() {
-    var products = [];
+    var { products } = this.props;
 
     return (
       <div>
-        <button type="button" className="btn btn-primary mb-3 mt-5">
+        <Link to="/product/add" className="btn btn-primary mb-3 mt-5">
           Thêm sản phẩm
-        </button>
+        </Link>
         <ProductList>
           { this.showProducts(products) }
         </ProductList>
@@ -29,6 +41,7 @@ class ProductListPage extends Component {
             key={index}
             product={product}
             index={index}
+            onDelete={this.onDelete}
           />
         )
       });
@@ -38,4 +51,21 @@ class ProductListPage extends Component {
   }
 }
 
-export default ProductListPage;
+const mapStateToProps = state => {
+  return {
+    products: state.products
+  }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    fetchAllProducts: () => {
+      dispatch(actFetchProductsRequest());
+    },
+    onDeleteProduct: (id) => {
+      dispatch(actDeleteProductRequest(id));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductListPage);

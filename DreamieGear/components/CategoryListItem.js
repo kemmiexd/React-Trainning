@@ -3,17 +3,22 @@ import {
   Image,
   Text,
   View,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 
 import MouseImage from './../assets/mouse.png';
 
 export default function CategoryListItem(props) {
-  const { category } = props; 
-  return <View style={styles.boxCategory}>
-    <Text style={styles.categoryTitle}>{ category.name }</Text>
-    <Image style={styles.categoryImage} source={MouseImage} />
-  </View>
+  const { category, onPress } = props; 
+  return (
+    <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
+      <View style={styles.boxCategory}>
+        <Text style={styles.categoryTitle}>{ category.name }</Text>
+        <Image style={styles.categoryImage} source={MouseImage} />
+      </View>
+    </TouchableOpacity>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -22,7 +27,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     shadowColor: '#000',
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 0 },
     backgroundColor: 'white',
@@ -33,8 +38,8 @@ const styles = StyleSheet.create({
     borderStyle: 'solid'
   },
   categoryImage: {
-    width: 70,
-    height: 70,
+    width: 128,
+    height: 128,
   },
   categoryTitle: {
     textTransform: 'uppercase',

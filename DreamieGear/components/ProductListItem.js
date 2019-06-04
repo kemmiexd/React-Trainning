@@ -11,7 +11,7 @@ export default function ProductListItem(props) {
   const { product, onAddToCartClick } = props;
   return (
     <View style={styles.boxProduct}>
-      <Image style={styles.img} source={{ uri: product.images[0].url }} />
+      <Image style={styles.img} source={{ uri: product.image }} />
       <Text style={styles.name}>{ product.name }</Text>
       <View style={styles.row}>
         <Text style={styles.price} >{product.price}</Text>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e1e1e1',
     borderStyle: 'solid',
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   img: {
     width: 150, 

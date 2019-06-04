@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
-
-import MouseItem from './../assets/mouse-razer.jpg';
+import axios from 'axios';
 
 import ProductListItem from './../components/ProductListItem';
 
@@ -11,34 +10,28 @@ export default class Category extends React.Component {
       title: navigation.getParam('categoryName')
     }
   }
-
+  
   constructor(props) {
     super(props);
-
+    
     this.state = {
-      products: [
-        {
-          id: 1,
-          images: [
-            {
-              url: 'https://static.techspot.com/images2/news/bigimage/2017/04/2017-04-26-image-6.png'
-            }
-          ],
-          name: 'Razer Mamba Wireless Chroma',
-          price: '$500'
-        },
-        {
-          id: 2,
-          images: [
-            {
-              url: 'https://images-na.ssl-images-amazon.com/images/I/51YmXnOjhEL._SX425_.jpg'
-            }
-          ],
-          name: 'Razer Taipan Ambidextrous',
-          price: '$200'
-        },
-      ]
+      products: []
     }
+  }
+  
+  componentDidMount() {
+    const categoryId = this.props.navigation.getParam('categoryId');
+
+    axios
+      .get(`products?filter=category%20${categoryId}`)
+      .then(res => {
+        this.setState({
+          products: res.data
+        })
+      })
+      .catch(err => {
+        console.error(err)
+      })
   }
 
   render() {

@@ -11,6 +11,7 @@ import MouseImage from './../assets/mouse.png';
 
 export default function CategoryListItem(props) {
   const { category, onPress } = props; 
+  
   return (
     <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
       <View style={styles.boxCategory}>
